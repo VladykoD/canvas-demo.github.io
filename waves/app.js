@@ -2,18 +2,23 @@
    const cnv = document.querySelector(`canvas`);
    const ctx = cnv.getContext(`2d`);
 
+   let centerX;
+   let centerY;
+
    function init() {
       cnv.width = innerWidth;
       cnv.height = innerHeight;
+      centerX = cnv.width/2;
+      centerY = cnv.height/2;
    }
    init();
 
 
-   const numberOfRings = 4;
-   const ringRadiusOffset = 14;
-   const ringRadius = 150;
+   const numberOfRings = 9;
+   const ringRadiusOffset = 12;
+   const ringRadius = 200;
    const waveOffset = 100;
-   const colors = [`#d62828`, `#f77f00`, `#fcbf49`, `#eae2b7`]
+   const colors = [`#ffba08`, `#faa307`, `#f48c06`, `#e85d04`, `#dc2f02`, `#d00000`, `#9d0208`, `#6a040f`, `#370617`]
    let startAngle = 0;
 
    function updateRings() {
@@ -26,8 +31,6 @@
       startAngle >= 360 ? startAngle = 0 : startAngle++;
    }
 
-   let centerX = cnv.width/2;
-   let centerY = cnv.height/2;
    const maxWavesAmplitude = 15;
    const numberOfWaves = 10;
 
