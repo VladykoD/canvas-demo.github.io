@@ -6,8 +6,8 @@
    let centerY;
 
    function init() {
-      cnv.width = innerWidth;
-      cnv.height = innerHeight;
+      cnv.width = innerWidth * 2;
+      cnv.height = innerHeight * 2;
       centerX = cnv.width/2;
       centerY = cnv.height/2;
    }

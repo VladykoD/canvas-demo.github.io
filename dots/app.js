@@ -50,7 +50,7 @@
             let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y) || 1;
             let force = (dist - config.sphereRad) / dist * b.mass;
 
-            if (j ==0) {
+            if (j == 0) {
                let alpha = config.mouseSize / dist;
                a.color = `rgba(255, 183, 3, ${alpha})`
                dist < config.mouseSize
@@ -84,8 +84,8 @@
    }
 
    function init() {
-      w = canvas.width = innerWidth;
-      h = canvas.height = innerHeight;
+      w = canvas.width = innerWidth * 2;
+      h = canvas.height = innerHeight * 2;
 
       mouse = { x: w/2, y: h/2, down: false }
       dots = [];

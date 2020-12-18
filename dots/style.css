@@ -7,5 +7,7 @@ body {
 
 canvas {
   background: #219ebc;
+  width: 100vw;
+  height: 100vh;
 }
 
