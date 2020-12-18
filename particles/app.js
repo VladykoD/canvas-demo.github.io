@@ -1,122 +1,114 @@
 (() => {
-   const config = {
-      dotMinRad: 6,
-      dotMaxRad: 20,
-      sphereRad: 300,
-      bigDotRad: 50,
-      massFactor: 0.002,
-      defColor: `rgba(255, 183, 3, .7)`,
-      smooth: 0.6,
-      mouseSize: 140
-   }
-
-   const TWO_PI = 2 * Math.PI;
-
    const canvas = document.querySelector(`canvas`);
    const ctx = canvas.getContext(`2d`);
-
-   let w;
-   let h;
-   let mouse;
-   let dots;
-
-   class Dot {
-      constructor(r) {
-         this.pos = { x: mouse.x, y: mouse.y}
-         this.vel = { x: 0, y: 0}
-         this.rad = r || random(config.dotMinRad, config.dotMaxRad)
-         this.mass = this.rad * config.massFactor
-         this.color = config.defColor
-      }
-
-      draw(x, y) {
-         this.pos.x = x || this.pos.x + this.vel.x;
-         this.pos.y = y || this.pos.y + this.vel.y;
-         createCircle(this.pos.x, this.pos.y, this.rad, true, this.color)
-         createCircle(this.pos.x, this.pos.y, this.rad, false, config.defColor)
-      }
+   const particles = [];
+   const properties = {
+      particleColor: '#f2e9e4',
+      particleRadius: 6,
+      particleCount: 80,
+      particleMaxVel: 0.5,
+      lineLength: 100,
+      particleLife: 100
    }
+   let w, h;
 
-   function updateDots() {
-      for (let i = 1; i < dots.length; i++) {
-         let acc = { x: 0, y: 0};
-
-         for (let j = 0; j < dots.length; j++) {
-            if (i == j) continue;
-
-            let [a, b] = [dots[i], dots[j]];
-
-            let delta = {x: b.pos.x - a.pos.x, y: b.pos.y - a.pos.y};
-            let dist = Math.sqrt(delta.x * delta.x + delta.y * delta.y) || 1;
-            let force = (dist - config.sphereRad) / dist * b.mass;
-
-            if (j ==0) {
-               let alpha = config.mouseSize / dist;
-               a.color = `rgba(255, 183, 3, ${alpha})`
-               dist < config.mouseSize
-                   ? force = (dist - config.mouseSize) * b.mass
-                   : force = a.mass / 2
-
-            }
-
-            acc.x += delta.x * force;
-            acc.y += delta.y * force;
+   class Particle {
+      constructor() {
+         this.x = Math.random() * canvas.width;
+         this.y = Math.random() * canvas.height;
+         this.velocityX = Math.random() * (properties.particleMaxVel * 2) - properties.particleMaxVel;
+         this.velocityY = Math.random() * (properties.particleMaxVel * 2) - properties.particleMaxVel;
+         this.life = Math.random() * properties.particleLife * 60;
+      }
+      position() {
+         if (this.x + this.velocityX > w
+             && this.velocityX > 0
+             || this.x + this.velocityX < 0 ) {
+            this.velocityX *= -1
+         } else {
+            this.x += this.velocityX;
+         }
+         if (this.y + this.velocityY > h
+             && this.velocityY > 0
+             || this.y + this.velocityY < 0 ) {
+            this.velocityY *= -1
+         } else {
+            this.y += this.velocityY;
+         }
+      }
+      reDraw(){
+         ctx.beginPath();
+         ctx.arc(this.x, this.y, properties.particleRadius, 0, Math.PI * 2)
+         ctx.closePath();
+         ctx.fillStyle = properties.particleColor;
+         ctx.fill();
+      }
+      reCalculateLife() {
+         if(this.life < 1) {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.velocityX = Math.random() * (properties.particleMaxVel * 2) - properties.particleMaxVel;
+            this.velocityY = Math.random() * (properties.particleMaxVel * 2) - properties.particleMaxVel;
+            this.life = Math.random() * properties.particleLife * 60;
          }
 
-         dots[i].vel.x = dots[i].vel.x * config.smooth + acc.x * dots[i].mass;
-         dots[i].vel.y = dots[i].vel.y * config.smooth + acc.y * dots[i].mass;
+         this.life--;
       }
-
-      dots.map(e => e == dots[0] ? e.draw(mouse.x, mouse.y) : e.draw());
    }
 
-   function createCircle(x, y, rad, fill, color) {
-      ctx.fillStyle = ctx.strokeStyle = color;
-      ctx.beginPath();
-      ctx.arc(x, y, rad, 0, TWO_PI);
-      ctx.closePath();
-
-      fill ? ctx.fill() : ctx.stroke();
+   function reDrawParticles () {
+      particles.forEach(el => {
+         el.reCalculateLife();
+         el.position();
+         el.reDraw()
+      })
    }
 
-   function random(min, max) {
-      return Math.random() * (max - min) + min;
+   function drawLines() {
+      let x1, x2, y1, y2, length, opacity;
+
+      for(let i in particles) {
+         for(let j in particles) {
+            x1 = particles[i].x;
+            y1 = particles[i].y;
+            x2 = particles[j].x;
+            y2 = particles[j].y;
+
+            length = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2))
+
+            if (length < properties.lineLength) {
+               opacity = 1 - length / properties.lineLength;
+               ctx.lineWidth = 2;
+               ctx.strokeStyle = `rgba(242, 233, 228, ${opacity})`;
+               ctx.beginPath();
+               ctx.moveTo(x1, y1);
+               ctx.lineTo(x2, y2);
+               ctx.closePath();
+               ctx.stroke();
+            }
+         }
+      }
+   }
+
+   function loop() {
+      canvas.width |= 0; // ctx.clearRect(0,0,cnv.width, cnv.height)
+      reDrawParticles();
+      drawLines();
+      requestAnimationFrame(loop);
    }
 
    function init() {
-      w = canvas.width = innerWidth;
-      h = canvas.height = innerHeight;
+      w = canvas.width = innerWidth * 2;
+      h = canvas.height = innerHeight * 2;
 
-      mouse = { x: w/2, y: h/2, down: false }
-      dots = [];
-
-      dots.push(new Dot(config.bigDotRad))
+      for (let i = 0; i < properties.particleCount; i++) {
+         particles.push(new Particle);
+      }
+      loop();
    }
    init();
 
 
-   function loop() {
-      canvas.width |= 0; // ctx.clearRect(0,0,cnv.width, cnv.height)
-
-      if (mouse.down) { dots.push(new Dot()) }
-      updateDots();
-
-      requestAnimationFrame(loop);
-   }
-   loop();
-
-   function setPos({layerX, layerY}) {
-      [mouse.x, mouse.y] = [layerX, layerY]
-   }
-
-   function isDown() {
-      mouse.down = !mouse.down;
-   }
-
-   canvas.addEventListener(`mousemove`, setPos);
-
-   window.addEventListener(`mousedown`, isDown)
-   window.addEventListener(`mouseup`, isDown)
 
    window.addEventListener(`resize`, init);
 
