@@ -5,7 +5,7 @@ body {
 }
 
 canvas {
-  background: #264653;
+  background: #f1faee;
   width: 100vw;
   height: 100vh;
   z-index: 1;
