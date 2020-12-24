@@ -3,7 +3,7 @@
    const ctx = canvas.getContext(`2d`);
 
    const particleArray = [];
-   const numberOfParticles = 50;
+   const numberOfParticles = 100;
 
    const mouse = {
       x: null,
@@ -56,8 +56,18 @@
 
 
    function init() {
-      canvas.width = innerWidth * 2;
-      canvas.height = innerHeight * 2;
+      w = canvas.width = innerWidth * 2;
+      h = canvas.height = innerHeight * 2;
+
+
+
+      firstColor = `hsla(${Math.random() * 300}, 100%, 50%, 1)`
+      secondColor = `hsla(${Math.random() * 300}, 100%, 50%, 0)`
+
+      gradient = ctx.createLinearGradient(0,0, w, h);
+      gradient.addColorStop(0, firstColor);
+      gradient.addColorStop(1, secondColor);
+
 
       for (let i = 0; i < numberOfParticles; i++) {
          let x = Math.random() * canvas.width
@@ -71,29 +81,31 @@
    init();
 
    function loop() {
-      ctx.fillStyle = 'rgba(0,0,0,0.8)';
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
       ctx.fillRect(0,0,canvas.width, canvas.height)
       for(let i = 0; i < particleArray.length; i++) {
          particleArray[i].update();
-         //particleArray[i].draw();
       }
       connect();
       requestAnimationFrame(loop);
    }
    loop();
 
-   window.addEventListener(`resize`, init);
+   window.addEventListener(`resize`, () => {
+      particleArray.length = 0;
+      init();
+   });
+
 
 
    function connect() {
-      let opacityValue = 1;
+
       for (let a = 0; a < particleArray.length; a++) {
          for (let b = a; b < particleArray.length; b++) {
             let distance = Math.sqrt(Math.pow((particleArray[a].x - particleArray[b].x), 2) + Math.pow((particleArray[a].y - particleArray[b].y), 2))
 
-            if (distance < 400) {
-               let opacityValue = 1 - (distance / 1000);
-               ctx.strokeStyle = `rgba(255,255,255, ${opacityValue}`;
+            if (distance < 600) {
+               ctx.strokeStyle = gradient;
                ctx.beginPath();
                ctx.lineWidth = 2;
                ctx.moveTo(particleArray[a].x, particleArray[a].y)
@@ -101,7 +113,6 @@
 
                ctx.stroke();
             }
-
          }
       }
    }
