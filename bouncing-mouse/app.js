@@ -3,7 +3,7 @@
    const ctx = canvas.getContext(`2d`);
 
    const particleArray = [];
-   const numberOfParticles = 200;
+   const numberOfParticles = 50;
 
    const mouse = {
       x: null,
@@ -42,7 +42,7 @@
          if (this.size < 0) {
             this.x = (mouse.x *2 + ((Math.random() * 20) - 10))
             this.y = (mouse.y *2 + ((Math.random() * 20) - 10))
-            this.size = (Math.random() * 10) + 2;
+            this.size = (Math.random() * 5) + 5;
             this.weight = (Math.random() * 2) - 0.05;
          }
          this.y += this.weight;
@@ -75,9 +75,9 @@
       ctx.fillRect(0,0,canvas.width, canvas.height)
       for(let i = 0; i < particleArray.length; i++) {
          particleArray[i].update();
-         particleArray[i].draw();
+         //particleArray[i].draw();
       }
-
+      connect();
       requestAnimationFrame(loop);
    }
    loop();
@@ -85,5 +85,25 @@
    window.addEventListener(`resize`, init);
 
 
+   function connect() {
+      let opacityValue = 1;
+      for (let a = 0; a < particleArray.length; a++) {
+         for (let b = a; b < particleArray.length; b++) {
+            let distance = Math.sqrt(Math.pow((particleArray[a].x - particleArray[b].x), 2) + Math.pow((particleArray[a].y - particleArray[b].y), 2))
+
+            if (distance < 400) {
+               let opacityValue = 1 - (distance / 1000);
+               ctx.strokeStyle = `rgba(255,255,255, ${opacityValue}`;
+               ctx.beginPath();
+               ctx.lineWidth = 2;
+               ctx.moveTo(particleArray[a].x, particleArray[a].y)
+               ctx.lineTo(particleArray[b].x, particleArray[b].y)
+
+               ctx.stroke();
+            }
+
+         }
+      }
+   }
 
 })();
