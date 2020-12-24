@@ -1,24 +1,88 @@
 (() => {
-   const cnv = document.querySelector(`canvas`);
-   const ctx = cnv.getContext(`2d`);
+   const canvas = document.querySelector(`canvas`);
+   const ctx = canvas.getContext(`2d`);
 
-   let centerX;
-   let centerY;
+   const particleArray = [];
+   const numberOfParticles = 900;
+
+   const mouse = {
+      x: null,
+      y: null
+   }
+
+   window.addEventListener('mousemove', function(e) {
+      mouse.x = e.x;
+      mouse.y = e.y;
+
+      //console.log(mouse.x, mouse.y)
+   })
+
+   setInterval(() => {
+      mouse.x = undefined;
+      mouse.y = undefined;
+   },200)
+
+   class Particles {
+      constructor(x,y,size, color, weight) {
+         this.x = x;
+         this.y = y;
+         this.size = size;
+         this.color = color;
+         this.weight = weight;
+      }
+      draw() {
+         ctx.beginPath();
+         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2, false);
+         ctx.fillStyle = this.color;
+         ctx.fill();
+      }
+      update() {
+         this.size -= 0.05;
+
+         if (this.size < 0) {
+            this.x = (mouse.x + ((Math.random() * 20) - 10))
+            this.y = (mouse.y + ((Math.random() * 20) - 10))
+            this.size = (Math.random() * 10) + 2;
+            this.weight = (Math.random() * 2) - 0.05;
+         }
+         this.y += this.weight;
+         this.weight += 0.2;
+
+         if(this.y > canvas.height - this.size) {
+            this.weight *= (-0.9);
+         }
+      }
+   }
+
 
    function init() {
-      cnv.width = innerWidth * 2;
-      cnv.height = innerHeight * 2;
-      centerX = cnv.width/2;
-      centerY = cnv.height/2;
+      canvas.width = innerWidth;
+      canvas.height = innerHeight;
+
+      for (let i = 0; i < numberOfParticles; i++) {
+         let x = Math.random() * canvas.width
+         let y = Math.random() * canvas.height
+         let size = (Math.random() * 5) + 2
+         let color = 'black'
+         let weight = 0;
+         particleArray.push(new Particles(x,y,size,color, weight))
+      }
    }
    init();
 
    function loop() {
-      cnv.width |= 0; // ctx.clearRect(0,0,cnv.width, cnv.height)
+      canvas.width |= 0;
+      for(let i = 0; i < particleArray.length; i++) {
+         particleArray[i].update();
+         particleArray[i].draw();
+      }
+
       requestAnimationFrame(loop);
    }
    loop();
 
    window.addEventListener(`resize`, init);
+
+
 
 })();
