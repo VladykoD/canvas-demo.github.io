@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  background: #023047;
+}
+
+canvas {
+  background: #023047;
+  width: 100vw;
+  height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+h1 {
+  color: #ffb703;
+  font-size: 50px;
+  font-family: sans-serif;
+  border-top: 5px solid;
+  line-height: 1;
+  position: relative;
+  z-index: 2;
+  margin: 0;
+  padding: 20px;
+}
