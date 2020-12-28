@@ -10,7 +10,7 @@
    let mouse = {
       x: null,
       y: null,
-      radius: 150,
+      radius: 250,
    }
 
    window.addEventListener('mousemove', function(event) {
@@ -22,7 +22,7 @@
    ctx.font = '700  120px / 1 "Arial Black"';
    ctx.fillText('Hello, sunshine!', 200, 400);
 
-   const data = ctx.getImageData(100, 200, 1200, 300)
+   const textCoordinates = ctx.getImageData(100, 200, 1200, 300);
 
    class Particle {
       constructor(x, y) {
@@ -31,8 +31,9 @@
          this.size = 5;
          this.baseX = this.x;
          this.baseY = this.y;
-         this.density = (Math.random() * 30) + 1;
+         this.density = (Math.random() * 10) + 30;
       }
+
       draw() {
          ctx.fillStyle = '#ffc93c';
          ctx.beginPath();
@@ -40,15 +41,32 @@
          ctx.closePath();
          ctx.fill();
       }
+
       update() {
          let dx = mouse.x * 2 - this.x ;
          let dy = mouse.y * 2 - this.y ;
-
          let distance = Math.hypot(dx, dy);
-         if(distance < 300) {
-            this.size = 30
+         let forceDirectionX = dx / distance;
+         let forceDirectionY = dy / distance;
+         let maxDistance = mouse.radius;
+
+         let force = (maxDistance - distance) / maxDistance;
+         let directionX = force * forceDirectionX * this.density;
+         let directionY = force * forceDirectionY * this.density;
+
+         if(distance < mouse.radius) {
+            this.x -= directionX * 2
+            this.y -= directionY * 2
          } else {
-            this.size = 5;
+            if (this.x !== this.baseX) {
+               let dx = this.x - this.baseX;
+               this.x -= dx/10;
+            }
+
+            if (this.y !== this.baseY) {
+               let dy = this.y - this.baseY;
+               this.y -= dy/10;
+            }
          }
       }
    }
@@ -66,7 +84,7 @@
 
 
    function animate() {
-      ctx.clearRect(0,0, w, h);
+      ctx.clearRect(0, 0, w, h);
       for(let i = 0; i < particleArray.length; i++) {
          particleArray[i].draw();
          particleArray[i].update();
