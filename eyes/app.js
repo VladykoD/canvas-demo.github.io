@@ -76,7 +76,7 @@
    function init() {
       eyes = [];
       let overlapping = false;
-      let numberOfEyes = 80;
+      let numberOfEyes = 30;
       let protection = 1000;
       let counter = 0;
 
@@ -84,7 +84,7 @@
          let eye = {
             x: Math.random() * w,
             y: Math.random() * h,
-            radius: Math.floor(Math.random() * 100) + 50
+            radius: Math.floor(Math.random() * 100) + 100
          }
          overlapping = false;
 
