@@ -29,7 +29,9 @@ class App {
 
 		//this.mesh.renderBranches(this.layer.context)
 
-		this.mesh.renderCells(this.layer.context)
+		//this.mesh.renderCells(this.layer.context)
+
+		this.mesh.renderCircles(this.layer.context)
 	}
 }
 

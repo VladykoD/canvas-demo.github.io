@@ -33,8 +33,10 @@ export class Mesh {
 				const homeX = x;
 				const homeY = y;
 				const angle = Math.random() * Math.PI * 2;
-				const radius = Math.random() * this.extraOffsetX / 2 + this.extraOffsetX;
-				const velocity = Math.random() * 0.04 - 0.02;
+				//const radius = Math.random() * this.extraOffsetX / 2 + this.extraOffsetX;
+				const radius =  10;
+				//const velocity = Math.random() * 0.04 - 0.02;
+				const velocity = Math.random() * 0.04 + 0.02;
 
 				this.particles.push({x,y, homeX, homeY, angle, radius, velocity})
 			}
@@ -256,6 +258,39 @@ export class Mesh {
 
 			ctx.beginPath();
 			ctx.arc(posX, posY, r, 0, Math.PI * 2);
+			ctx.fill();
+
+		})
+
+	}
+
+	renderCircles(ctx) {
+		this.triangles.forEach( t => {
+			const {a,b,c} = t;
+
+			const posX = (a.x + b.x + c.x) / 3;
+			const posY = (a.y + b.y + c.y) / 3;
+			const dist = Math.hypot(posX, posY)
+
+			const hue = dist / this.maxDist * this.colorRange - this.colorTimer;
+
+			ctx.fillStyle = `hsl(${hue}, 75%, 50%)`;
+			ctx.strokeStyle = `white`;
+
+
+			const AB = {x: (a.x + b.x) / 2, y: (a.y + b.y) / 2}
+			const BC = {x: (b.x + c.x) / 2, y: (b.y + c.y) / 2}
+			const CA = {x: (c.x + a.x) / 2, y: (c.y + a.y) / 2}
+
+
+			const dA = Math.hypot(AB.x - posX, AB.y - posY)
+			const dB = Math.hypot(BC.x - posX, BC.y - posY)
+			const dC = Math.hypot(CA.x - posX, CA.y - posY)
+			const r = Math.min(dA, dB, dC);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.arc(posX, posY, r * 2.2, 0, Math.PI * 2);
 			ctx.fill();
 
 		})
