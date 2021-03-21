@@ -19,10 +19,17 @@ class App {
 		this.mesh.updateTriangles(correction)
 	}
 	display() {
+		this.layer.context.clearRect(0,0, this.layer.w, this.layer.h)
+
 		//this.mesh.renderTriangles(this.layer.context)
 
-		this.layer.context.clearRect(0,0, this.layer.w, this.layer.h)
-		this.mesh.renderCurves(this.layer.context)
+		//this.mesh.renderCurves(this.layer.context)
+
+		//this.mesh.renderTurbulence(this.layer.context)
+
+		//this.mesh.renderBranches(this.layer.context)
+
+		this.mesh.renderCells(this.layer.context)
 	}
 }
 

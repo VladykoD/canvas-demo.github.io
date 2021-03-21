@@ -135,4 +135,130 @@ export class Mesh {
 			ctx.stroke();
 		})
 	}
+
+	renderTurbulence(ctx) {
+		this.triangles.forEach( t => {
+			const {a,b,c} = t;
+
+			const posX = (a.x + b.x + c.x) / 3;
+			const posY = (a.y + b.y + c.y) / 3;
+			const dist = Math.hypot(posX, posY)
+
+			const hue = dist / this.maxDist * this.colorRange - this.colorTimer;
+
+			ctx.strokeStyle = `hsl(${hue}, 60%, 60%)`;
+
+			ctx.beginPath();
+			ctx.moveTo(a.x, a.y);
+			ctx.lineTo(b.x, b.y);
+			ctx.lineTo(c.x, c.y);
+			ctx.closePath();
+
+			ctx.stroke();
+
+			const AB = {x: (a.x + b.x) / 2, y: (a.y + b.y) / 2}
+			const BC = {x: (b.x + c.x) / 2, y: (b.y + c.y) / 2}
+			const CA = {x: (c.x + a.x) / 2, y: (c.y + a.y) / 2}
+
+
+			ctx.beginPath();
+			ctx.moveTo(AB.x, AB.y);
+			ctx.lineTo(BC.x, BC.y);
+			ctx.lineTo(CA.x, CA.y);
+			ctx.closePath();
+
+			ctx.stroke();
+		})
+
+	}
+
+	renderBranches(ctx) {
+		this.triangles.forEach( t => {
+			const {a,b,c} = t;
+
+			const posX = (a.x + b.x + c.x) / 3;
+			const posY = (a.y + b.y + c.y) / 3;
+			const dist = Math.hypot(posX, posY)
+
+			const hue = dist / this.maxDist * this.colorRange - this.colorTimer;
+
+			ctx.fillStyle = `hsl(${hue}, 75%, 50%)`;
+			ctx.strokeStyle = `hsl(${hue + 50}, 60%, 60%)`;
+
+			ctx.beginPath();
+			ctx.moveTo(a.x, a.y);
+			//ctx.lineTo(b.x, b.y);
+			ctx.lineTo(c.x, c.y);
+			//ctx.closePath();
+
+			ctx.stroke();
+
+			const AB = {x: (a.x + b.x) / 2, y: (a.y + b.y) / 2}
+			const BC = {x: (b.x + c.x) / 2, y: (b.y + c.y) / 2}
+			const CA = {x: (c.x + a.x) / 2, y: (c.y + a.y) / 2}
+
+
+			ctx.beginPath();
+			ctx.moveTo(AB.x, AB.y);
+			//ctx.lineTo(BC.x, BC.y);
+			ctx.lineTo(CA.x, CA.y);
+			//ctx.closePath();
+
+			ctx.stroke();
+
+
+			ctx.beginPath();
+			ctx.arc(AB.x, AB.y, 10, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(BC.x, BC.y, 10, 0, Math.PI * 2);
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(CA.x, CA.y, 10, 0, Math.PI * 2);
+			ctx.fill();
+
+
+		})
+
+	}
+
+	renderCells(ctx) {
+		this.triangles.forEach( t => {
+			const {a,b,c} = t;
+
+			const posX = (a.x + b.x + c.x) / 3;
+			const posY = (a.y + b.y + c.y) / 3;
+			const dist = Math.hypot(posX, posY)
+
+			const hue = dist / this.maxDist * this.colorRange - this.colorTimer;
+
+			ctx.fillStyle = `hsl(${hue}, 75%, 50%)`;
+			ctx.strokeStyle = `hsl(${hue + 50}, 60%, 60%)`;
+
+			ctx.beginPath();
+			ctx.moveTo(a.x, a.y);
+			ctx.lineTo(b.x, b.y);
+			ctx.lineTo(c.x, c.y);
+			ctx.closePath();
+
+			ctx.stroke();
+
+			const AB = {x: (a.x + b.x) / 2, y: (a.y + b.y) / 2}
+			const BC = {x: (b.x + c.x) / 2, y: (b.y + c.y) / 2}
+			const CA = {x: (c.x + a.x) / 2, y: (c.y + a.y) / 2}
+
+
+			const dA = Math.hypot(AB.x - posX, AB.y - posY)
+			const dB = Math.hypot(BC.x - posX, BC.y - posY)
+			const dC = Math.hypot(CA.x - posX, CA.y - posY)
+			const r = Math.min(dA, dB, dC);
+			ctx.stroke();
+
+			ctx.beginPath();
+			ctx.arc(posX, posY, r, 0, Math.PI * 2);
+			ctx.fill();
+
+		})
+
+	}
 }
