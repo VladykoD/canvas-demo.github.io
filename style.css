@@ -1,0 +1,40 @@
+body {
+  margin: 0;
+  padding: 50px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+    font: 400 20px / 1.4 sans-serif;
+}
+
+
+.container {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 80px;
+}
+
+ul {
+    columns: 3;
+}
+
+@media(max-width: 800px) {
+    ul {
+        columns: 2;
+    }
+}
+
+@media(max-width: 500px) {
+    ul {
+        columns: 1;
+    }
+}
+
+li {
+    break-inside: avoid;
+}
+
+li + li {
+    margin-top: .5em;
+}
+
